@@ -1,4 +1,7 @@
 import { IconType } from 'react-icons';
+import { SiOpensea } from "react-icons/si";
+import { PiHouseDuotone } from "react-icons/pi";
+import { GrGallery } from "react-icons/gr";
 
 import {
 	HiChevronUp,
@@ -49,4 +52,7 @@ export const iconLibrary: Record<string, IconType> = {
 	minus: HiMiniMinus,
 	plus: HiMiniPlus,
 	HiMiniMagnifyingGlass: HiMiniMagnifyingGlass,
+	opensea:SiOpensea,
+	PiHouseDuotone:PiHouseDuotone,
+	GrGallery:GrGallery,
 };

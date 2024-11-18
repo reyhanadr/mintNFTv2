@@ -1,12 +1,11 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Button, Flex, Logo, NavIcon, SmartLink, Background } from '@/once-ui/components';
+import { Button, Flex, Logo, NavIcon, SmartLink, Background, ToggleButton, UserMenu } from '@/once-ui/components';
 import { usePathname } from 'next/navigation';
-import config from '@/utils/config'; // Import konfigurasi
 import { Sidebar } from '@/once-ui/modules';
 
-const Header: React.FC = () => {
+const Header: React.FC = () =>  {
     const pathname = usePathname() ?? '';
     const [connected, setConnected] = useState(false); // Status koneksi MetaMask
     const [account, setAccount] = useState<string | null>(null); // Menyimpan alamat akun yang terhubung
@@ -74,48 +73,74 @@ const Header: React.FC = () => {
             </Flex>
 
             {/* Navigasi Desktop */}
-            <Flex fillWidth alignItems="center" justifyContent="space-between">
-                <Flex fillWidth>
-                    <Flex hide="s" fillWidth gap="4" paddingX="l" alignItems="center">
-                        <SmartLink href={`${config.baseURL}`}>Home</SmartLink>
-                        <SmartLink href={`${config.baseURL}/gallery`}>Gallery</SmartLink>
+            <Flex
+                    fillWidth
+                    alignItems="center" justifyContent="space-between">
+                    <Flex
+                        fillWidth>
+                        <Flex
+                            hide="s"
+                            fillWidth gap="4" paddingX="l"
+                            alignItems="center">
+                            <ToggleButton
+                                selected={pathname === '/'} // Tambahkan kondisi untuk halaman dashboard
+                                href={`/`} // Pastikan href mengarah ke halaman utama
+                                label="Dashboard"
+                            />
+                            <ToggleButton
+                                selected={pathname.startsWith('/gallery')} // Cocokkan semua URL di bawah /gallery
+                                href={`/gallery`}
+                                label="Gallery"
+                            />
+                            {/* <ToggleButton
+                                selected={pathname.startsWith('/mint')} // Cocokkan semua URL di bawah /mint
+                                href={`${baseURL}/mintNFT`}
+                                label="Mint NFT"
+                            /> */}
+                        </Flex>
                     </Flex>
-                </Flex>
+                    {/* Tombol Connect */}
+                    <Flex alignItems="center" gap="8">
+                        <Button
+                            size="s"
+                            variant="secondary"
+                            label="Mint NFT"
+                            href={`/mintNFT`}
+                        />
+                        <Button
+                            size="s"
+                            variant="primary"
+                            label={
+                                connected
+                                    ? `Connected: ${account?.slice(0, 6)}...${account?.slice(-4)}`
+                                    : 'Connect'
+                            }
+                            onClick={connected ? disconnectFromMetaMask : connectToMetaMask}
+                        />
+                    </Flex>
 
-                {/* Tombol Connect */}
-                <Flex alignItems="center" gap="8">
-                    <Button
-                        size="s"
-                        variant="secondary"
-                        label="Mint"
-                        href={`${config.baseURL}/mintNFT`}
-                    />
-                    <Button
-                        size="s"
-                        variant="primary"
-                        label={
-                            connected
-                                ? `Connected: ${account?.slice(0, 6)}...${account?.slice(-4)}`
-                                : 'Connect'
-                        }
-                        onClick={connected ? disconnectFromMetaMask : connectToMetaMask}
-                    />
                 </Flex>
-            </Flex>
 
             {/* Navigasi Mobile */}
             {isMenuOpen && (
                 <Flex
                     direction="column"
-                    gap="4"
+                    gap="8"
                     padding="m"
-                    background="page"
+                    // background="brand-medium"
+                    fillWidth
+                    maxWidth={20}
+                    position='absolute'
+                    // marginTop='56'
+                    marginLeft='0'
+                    marginRight='0'
+                    zIndex={100}
+
                     style={{
-                        position: 'absolute',
-                        top: '56px',
-                        left: '0',
-                        right: '0',
-                        zIndex: 1000,
+                        left:"0px",
+                        minWidth: "100%",
+                        position: "absolute",
+                        top: "50px"
                     }}
                 >
                     <Sidebar></Sidebar>

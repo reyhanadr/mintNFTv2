@@ -1,13 +1,13 @@
 
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Flex, Button, Text, Input, Textarea } from "@/once-ui/components";
 import { MediaUpload } from "@/once-ui/modules/media/MediaUpload";
 import { Header } from "@/once-ui/modules/layout/Header";
+import { Footer } from "@/once-ui/modules/layout/Footer";
 import { ThirdwebSDK } from "@thirdweb-dev/sdk";
 import { ethers } from "ethers";
-import Link from "next/link";
 
 export default function MintNFT() {
   const [image, setImage] = useState<string | null>(null); // Store image URL
@@ -16,22 +16,34 @@ export default function MintNFT() {
   const [externalUrl, setExternalUrl] = useState("");
   const [isMinting, setIsMinting] = useState(false);
   const [mintError, setMintError] = useState<string | null>(null);
+  const [provider, setProvider] = useState<ethers.providers.Web3Provider | null>(null);
+  const [sdk, setSdk] = useState<ThirdwebSDK | null>(null);
   const router = useRouter();
   
   const contractAddress = "0xA895a9b5882DBa287CF359b6a722C5be46aCb675";
-  
+    
   // Global configuration for ThirdwebSDK
-  const provider = new ethers.providers.Web3Provider(window.ethereum);
-  const sepoliaChainId = 11155111;
-  const sdk = new ThirdwebSDK(provider, {
-    chainId: sepoliaChainId,
-    clientId: process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID,
-    secretKey: process.env.NEXT_PUBLIC_THIRDWEB_SECRET_KEY,
-  });
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.ethereum) {
+      const web3Provider = new ethers.providers.Web3Provider(window.ethereum);
+      setProvider(web3Provider);
+
+      const sdkInstance = new ThirdwebSDK(web3Provider, {
+        clientId: process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID,
+        secretKey: process.env.NEXT_PUBLIC_THIRDWEB_SECRET_KEY,
+      });
+
+      setSdk(sdkInstance);
+    }
+  }, []);
+
 
   // Fungsi untuk menangani upload gambar ke IPFS
   const handleImageUpload = async (file: File): Promise<string | null> => {
     try {
+      if (!sdk) {
+        throw new Error("SDK belum diinisialisasi. Pastikan MetaMask terhubung.");
+      }
       const fileToUpload = new File([file], file.name, { type: file.type });
       const uploadedImageUrl = await sdk.storage.upload(fileToUpload);
       console.log("Uploaded Image URL:", uploadedImageUrl);
@@ -46,6 +58,9 @@ export default function MintNFT() {
   // Fungsi untuk upload metadata NFT ke IPFS
   const uploadMetadata = async (): Promise<string | null> => {
     try {
+      if (!sdk) {
+        throw new Error("SDK belum diinisialisasi. Pastikan MetaMask terhubung.");
+      }
       if (!name || !description || !image) {
         throw new Error("Pastikan semua field telah diisi, termasuk gambar.");
       }
@@ -67,7 +82,8 @@ export default function MintNFT() {
       return uploadedMetadataUrl;
     } catch (error) {
       console.error("Error uploading metadata to IPFS:", error);
-      setMintError(error.message || "Gagal mengunggah metadata ke IPFS.");
+      const errorMessage = error instanceof Error ? error.message : "Gagal mengunggah metadata ke IPFS.";
+      setMintError(errorMessage);
       return null;
     }
   };
@@ -78,9 +94,8 @@ export default function MintNFT() {
       setIsMinting(true);
       setMintError(null);
 
-      if (!window.ethereum) {
-        alert("MetaMask tidak terdeteksi!");
-        return;
+      if (!provider || !sdk) {
+        throw new Error("Provider atau SDK belum siap.");
       }
 
       const signer = provider.getSigner();
@@ -118,8 +133,9 @@ export default function MintNFT() {
 
       // Redirect ke halaman success-mint setelah minting berhasil
       router.push("/success-mint");
-    } catch (error) {
-      setMintError(error.message || "Terjadi kesalahan saat minting");
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "Terjadi kesalahan saat minting";
+      setMintError(errorMessage);
       console.error("Minting error:", error);
     } finally {
       setIsMinting(false);
@@ -136,21 +152,6 @@ export default function MintNFT() {
     }
   };
   
-  // Example of calling handleImageUpload and updating state
-  // const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   const file = event.target.files ? event.target.files[0] : null;
-  //   if (file) {
-  //     const uploadedUrl = await handleImageUpload(file);
-  //     if (uploadedUrl) {
-  //       setImage(uploadedUrl); // Set image URL after upload
-  //     } else {
-  //       console.log("Failed to upload image.");
-  //     }
-  //   }
-  // };
-  
-  
-
   return (
     <Flex
       fillWidth
@@ -171,11 +172,7 @@ export default function MintNFT() {
         alignItems="center"
         flex={1}
       >
-        <Header
-          name="Scott"
-          subline="Infinite Inc."
-          avatar="/images/demos/avatar_01.png"
-        />
+        <Header/>
         <Flex
           gap="24"
           padding="24"
@@ -222,7 +219,10 @@ export default function MintNFT() {
                 aspectRatio="4 / 3"
                 quality={0.8}
                 initialPreviewImage="/images/upload_image.png"
-                onFileUpload={handleImageUpload} // Menggunakan onFileUpload yang menerima file
+                onFileUpload={async (file) => {
+                  await handleImageUpload(file);
+                }}
+                
               />
             </Flex>
             <Flex
@@ -297,39 +297,7 @@ export default function MintNFT() {
           )}
         </Flex>
       </Flex>
-      <Flex
-        as="footer"
-        position="relative"
-        fillWidth
-        paddingX="l"
-        paddingY="m"
-        justifyContent="space-between"
-      >
-        <Text variant="body-default-s" onBackground="neutral-weak">
-          © 2024 Once UI,{" "}
-          <Link href="https://github.com/once-ui-system/nextjs-starter?tab=MIT-1-ov-file">
-            MIT License
-          </Link>
-        </Text>
-        <Flex gap="12">
-          <Button
-            href="https://github.com/once-ui-system/nextjs-starter"
-            prefixIcon="github"
-            size="s"
-            variant="tertiary"
-          >
-            GitHub
-          </Button>
-          <Button
-            href="https://discord.com/invite/5EyAQ4eNdS"
-            prefixIcon="discord"
-            size="s"
-            variant="tertiary"
-          >
-            Discord
-          </Button>
-        </Flex>
-      </Flex>
+      <Footer></Footer>
     </Flex>
   );
 }

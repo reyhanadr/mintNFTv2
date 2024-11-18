@@ -2,43 +2,37 @@
 
 import { Flex, Icon, ToggleButton, Text } from '@/once-ui/components';
 import { usePathname } from 'next/navigation';
-import config from '@/utils/config'; // Menggunakan konfigurasi base URL
 
 const Sidebar: React.FC = () => {
     const pathname = usePathname() ?? '';
 
     return (
         <Flex
-            data-theme="dark"
+            // data-theme="dark"
             fillWidth
             fillHeight
-            paddingX="16"
-            paddingY="32"
-            gap="m"
-            onSolid="neutral-strong"
-            solid="neutral-weak"
-            border="neutral-weak"
+            paddingX="12"
+            paddingY="24"
+            gap="2"
+            background='surface'
+            role='sidebar'
+            border="neutral-medium"
             borderStyle="solid-1"
-            radius="l"
+            radius="m-4"
             justifyContent="flex-start"
             alignItems="flex-start"
             direction="column"
+            flex={1}
+            
         >
             <Flex
-                fillHeight
                 fillWidth
-                paddingX="xs"
-                gap="m"
+                gap="4"
                 direction="column"
             >
-                <Flex
-                    fillWidth
-                    gap="4"
-                    direction="column"
-                >
                     <Text
                         variant="body-default-xs"
-                        onBackground="neutral-weak"
+                        onBackground="neutral-strong"
                         marginBottom="8"
                         marginLeft="16"
                     >
@@ -47,7 +41,7 @@ const Sidebar: React.FC = () => {
                     <ToggleButton
                         width="fill"
                         align="start"
-                        href={`${config.baseURL}/home`}
+                        href={`/`}
                         selected={pathname.includes('/home')}
                     >
                         <Flex
@@ -58,7 +52,7 @@ const Sidebar: React.FC = () => {
                         >
                             <Icon
                                 name="PiHouseDuotone"
-                                onBackground="neutral-weak"
+                                onBackground="neutral-strong"
                                 size="xs"
                             />
                             Home
@@ -67,7 +61,7 @@ const Sidebar: React.FC = () => {
                     <ToggleButton
                         width="fill"
                         align="start"
-                        href={`${config.baseURL}/gallery`}
+                        href={`/gallery`}
                         selected={pathname.includes('/gallery')}
                     >
                         <Flex
@@ -77,14 +71,13 @@ const Sidebar: React.FC = () => {
                             textVariant="label-default-s"
                         >
                             <Icon
-                                name="PiImageDuotone"
-                                onBackground="neutral-weak"
+                                name="GrGallery"
+                                onBackground="neutral-strong"
                                 size="xs"
                             />
                             Gallery
                         </Flex>
                     </ToggleButton>
-                </Flex>
             </Flex>
         </Flex>
     );

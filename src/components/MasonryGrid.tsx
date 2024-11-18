@@ -3,6 +3,14 @@ import { SmartImage, Flex, Text, Button } from "@/once-ui/components";
 import { useState, useEffect } from "react";
 import { ThirdwebSDK } from "@thirdweb-dev/sdk";
 
+// Definisikan tipe data untuk NFT metadata
+interface NFTMetadata {
+    tokenId: number;
+    name?: string;
+    description?: string;
+    image?: string;
+}
+
 export default function MasonryGrid() {
     const breakpointColumnsObj = {
         default: 3, // 3 columns for desktop
@@ -11,8 +19,8 @@ export default function MasonryGrid() {
     };
 
     const contractAddress = "0xA895a9b5882DBa287CF359b6a722C5be46aCb675";
-    const [nftData, setNftData] = useState([]);
-    const [totalTokens, setTotalTokens] = useState(0);
+    const [nftData, setNftData] = useState<NFTMetadata[]>([]); // tipe data NFTMetadata[]
+    const [totalTokens, setTotalTokens] = useState(0); // tipe data tokenIdCounter
 
     // Load API key from environment variables
     const sdk = new ThirdwebSDK("sepolia", {
@@ -25,14 +33,13 @@ export default function MasonryGrid() {
             try {
                 // Instantiate contract
                 const contract = await sdk.getContract(contractAddress);
-                
+
                 // Call _tokenIdCounter function
                 const tokenIdCounter = await contract.call("_tokenIdCounter", []);
-                
+
                 // Set the total token count from the result
                 setTotalTokens(parseInt(tokenIdCounter)); // pastikan mengonversi ke angka
                 console.log("tokenIdCounter:", tokenIdCounter);
-
             } catch (error) {
                 console.error("Error fetching tokenIdCounter:", error);
             }
@@ -42,14 +49,14 @@ export default function MasonryGrid() {
     }, []);
 
     // Fungsi untuk mempersingkat deskripsi
-    const shortenDescription = (description, maxLength = 100) => {
+    const shortenDescription = (description: string | undefined, maxLength: number = 100): string => {
         if (!description) return "No description available";
         if (description.length <= maxLength) return description;
         return description.slice(0, maxLength) + "..."; // Menambahkan "..." di akhir deskripsi yang panjang
     };
 
     // Fetch NFT metadata berdasarkan token ID
-    const fetchNFTMetadata = async (tokenId) => {
+    const fetchNFTMetadata = async (tokenId: number): Promise<NFTMetadata | null> => {
         try {
             // Instantiate contract
             const contract = await sdk.getContract(contractAddress);
@@ -74,7 +81,7 @@ export default function MasonryGrid() {
             const loadNFTs = async () => {
                 const dataPromises = tokenIds.map((id) => fetchNFTMetadata(id));
                 const results = await Promise.all(dataPromises);
-                setNftData(results.filter((item) => item !== null));
+                setNftData(results.filter((item): item is NFTMetadata => item !== null)); // Tambahkan type guard
             };
             loadNFTs();
         }
@@ -99,6 +106,8 @@ export default function MasonryGrid() {
                             radius="m"
                             onBackground="neutral-strong"
                             background="accent-medium"
+					        shadow='l'
+
                         >
                             <SmartImage
                                 src={nft.image?.replace("ipfs://", "https://ipfs.io/ipfs/") || ''}
@@ -106,7 +115,7 @@ export default function MasonryGrid() {
                                 aspectRatio="16/9"
                                 radius="m"
                                 objectFit="cover"
-                                priority={true} // {false} | {true}
+                                priority={false} // {false} | {true}
                             />
                             <Flex
                                 direction="column"

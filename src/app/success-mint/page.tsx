@@ -3,23 +3,14 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
-  Heading,
   Text,
   Flex,
   Button,
   RevealFx,
   SmartImage,
-  Grid,
-  Icon,
-  Input,
-  InlineCode,
-  Logo,
-  Background,
-  LetterFx,
-  Arrow,
 } from "@/once-ui/components";
 import { Header } from "@/once-ui/modules/layout/Header";
-import Link from "next/link";
+import { Footer } from "@/once-ui/modules/layout/Footer";
 
 export default function SuccessMint() {
   const [mintedNFTData, setMintedNFTData] = useState<any>(null);
@@ -34,9 +25,82 @@ export default function SuccessMint() {
 
   if (!mintedNFTData) {
     return (
-      <Flex alignItems="center" justifyContent="center" fillWidth>
-        <Text>Loading...</Text>
+      <Flex
+      fillWidth
+      paddingTop="l"
+      paddingX="l"
+      direction="column"
+      alignItems="center"
+      flex={1}
+    >
+      <Flex
+        position="relative"
+        as="section"
+        overflow="hidden"
+        fillWidth
+        minHeight="0"
+        maxWidth={68}
+        direction="column"
+        alignItems="center"
+        flex={1}
+      >
+        <Header/>
+        <RevealFx speed="medium" delay={0} translateY={0}>
+          <Flex
+            direction="column"
+            padding="24"
+            alignItems="center"
+            justifyContent="center"
+            gap="8"
+          >
+            <Text
+              variant="heading-strong-m"
+              onBackground="neutral-medium"
+              marginBottom="16"
+            >
+              Loading
+            </Text>
+            <Flex
+              direction="column"
+              marginTop="24"
+              gap="24"
+              padding="24"
+              alignItems="center"
+              justifyContent="center"
+              fillWidth
+              border="neutral-medium"
+              borderStyle="solid-1"
+              radius="m"
+              onBackground="neutral-strong"
+              background="accent-medium"
+              maxWidth={30}
+              marginBottom="24"
+            >
+              <SmartImage
+                src="/images/upload_image.png"
+                isLoading
+                alt="Minted NFT"
+                aspectRatio="16/9"
+                radius="m"
+                objectFit="cover"
+              />
+              <Flex
+                direction="column"
+                fillWidth
+                gap="12"
+                alignItems="start"
+              >
+              </Flex>
+            </Flex>
+
+            <Button size="s" variant="tertiary">
+              Back to Home
+            </Button>
+          </Flex>
+        </RevealFx>
       </Flex>
+      <Footer></Footer>
+    </Flex>
     );
   }
 
@@ -68,11 +132,7 @@ export default function SuccessMint() {
         alignItems="center"
         flex={1}
       >
-        <Header
-          name="Scott"
-          subline="Infinite Inc."
-          avatar="/images/demos/avatar_01.png"
-        />
+        <Header/>
         <RevealFx speed="medium" delay={0} translateY={0}>
           <Flex
             direction="column"
@@ -132,39 +192,7 @@ export default function SuccessMint() {
           </Flex>
         </RevealFx>
       </Flex>
-      <Flex
-        as="footer"
-        position="relative"
-        fillWidth
-        paddingX="l"
-        paddingY="m"
-        justifyContent="space-between"
-      >
-        <Text variant="body-default-s" onBackground="neutral-weak">
-          © 2024 Once UI,{" "}
-          <Link href="https://github.com/once-ui-system/nextjs-starter?tab=MIT-1-ov-file">
-            MIT License
-          </Link>
-        </Text>
-        <Flex gap="12">
-          <Button
-            href="https://github.com/once-ui-system/nextjs-starter"
-            prefixIcon="github"
-            size="s"
-            variant="tertiary"
-          >
-            GitHub
-          </Button>
-          <Button
-            href="https://discord.com/invite/5EyAQ4eNdS"
-            prefixIcon="discord"
-            size="s"
-            variant="tertiary"
-          >
-            Discord
-          </Button>
-        </Flex>
-      </Flex>
+      <Footer></Footer>
     </Flex>
   );
 }

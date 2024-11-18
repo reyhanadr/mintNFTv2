@@ -9,15 +9,15 @@ const style = {
     solid:       'contrast',    // color | contrast
     solidStyle:  'flat',        // flat | plastic
     border:      'playful',     // rounded | playful | conservative
-    surface:     'translucent', // filled | translucent
+    surface:     'filled', // filled | translucent
     transition:  'all',         // all | micro | macro
     scaling:     '100',         // 90 | 95 | 100 | 105 | 110
 }
 
 // default metadata
 const meta = {
-    title: 'Once UI - Your Personalized Design System for Next.js',
-    description: 'An open-source design system and component library for Next.js that emphasizes easy styling and accessibility in UI development.'
+    title: 'Mint Mate - Engowl Studio Technical Test',
+    description: '"MintMate", a website dedicated to creating and minting NFTs.'
 }
 
 
