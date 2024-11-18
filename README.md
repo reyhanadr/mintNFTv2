@@ -1,2 +1,2 @@
-1. npm install or npm run build
+1. npm install
 2. npm run dev
