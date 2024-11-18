@@ -77,7 +77,7 @@ const Header: React.FC = () => {
             <Flex fillWidth alignItems="center" justifyContent="space-between">
                 <Flex fillWidth>
                     <Flex hide="s" fillWidth gap="4" paddingX="l" alignItems="center">
-                        <SmartLink href={`${config.baseURL}/home`}>Home</SmartLink>
+                        <SmartLink href={`${config.baseURL}`}>Home</SmartLink>
                         <SmartLink href={`${config.baseURL}/gallery`}>Gallery</SmartLink>
                     </Flex>
                 </Flex>
