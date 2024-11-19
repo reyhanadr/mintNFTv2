@@ -80,9 +80,11 @@ export default function SuccessMint() {
                 src="/images/upload_image.png"
                 isLoading
                 alt="Minted NFT"
-                aspectRatio="16/9"
+                aspectRatio="4/3"
                 radius="m"
                 objectFit="cover"
+                priority={true}
+
               />
               <Flex
                 direction="column"

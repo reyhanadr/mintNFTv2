@@ -1,21 +1,21 @@
-
 "use client";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Flex, Button, Text, Input, Textarea } from "@/once-ui/components";
+import { Flex, Button, Text, Input, Textarea, Toaster } from "@/once-ui/components";
 import { MediaUpload } from "@/once-ui/modules/media/MediaUpload";
 import { Header } from "@/once-ui/modules/layout/Header";
 import { Footer } from "@/once-ui/modules/layout/Footer";
 import { ThirdwebSDK } from "@thirdweb-dev/sdk";
 import { ethers } from "ethers";
 
-export default function MintNFT() {
-  const [image, setImage] = useState<string | null>(null); // Store image URL
+export default function mintNFT() {
+  const [image, setImage] = useState<string | null>(null);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [externalUrl, setExternalUrl] = useState("");
   const [isMinting, setIsMinting] = useState(false);
   const [mintError, setMintError] = useState<string | null>(null);
+  const [toasts, setToasts] = useState<{ id: string; message: string; variant: "success" | "danger"; }[]>([]);
   const [provider, setProvider] = useState<ethers.providers.Web3Provider | null>(null);
   const [sdk, setSdk] = useState<ThirdwebSDK | null>(null);
   const router = useRouter();
@@ -83,10 +83,21 @@ export default function MintNFT() {
     } catch (error) {
       console.error("Error uploading metadata to IPFS:", error);
       const errorMessage = error instanceof Error ? error.message : "Gagal mengunggah metadata ke IPFS.";
-      setMintError(errorMessage);
       return null;
     }
   };
+
+    // Fungsi untuk menambah toast
+    const addToast = (message: string, variant: "success" | "danger") => {
+      const id = Date.now().toString();
+      setToasts((prevToasts) => [...prevToasts, { id, message, variant }]);
+      setTimeout(() => removeToast(id), 5000); // Hapus toast setelah 5 detik
+    };
+  
+    // Fungsi untuk menghapus toast
+    const removeToast = (id: string) => {
+      setToasts((prevToasts) => prevToasts.filter((toast) => toast.id !== id));
+    };
 
   // Fungsi untuk mint NFT
   const mintNFT = async () => {
@@ -121,7 +132,7 @@ export default function MintNFT() {
 
       const transactionResponse = await signer.sendTransaction(transactionData);
       await transactionResponse.wait(); // Tunggu transaksi konfirmasi
-      alert("NFT berhasil di-mint!");
+      addToast("NFT successfully minted!", "success");
 
       // Simpan data ke sessionStorage setelah minting berhasil
       sessionStorage.setItem("mintedNFTData", JSON.stringify({
@@ -134,8 +145,8 @@ export default function MintNFT() {
       // Redirect ke halaman success-mint setelah minting berhasil
       router.push("/success-mint");
     } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : "Terjadi kesalahan saat minting";
-      setMintError(errorMessage);
+      const errorMessage = "An error occurred during minting";
+      addToast(errorMessage, "danger");
       console.error("Minting error:", error);
     } finally {
       setIsMinting(false);
@@ -148,7 +159,7 @@ export default function MintNFT() {
     if (image) {
       mintNFT();
     } else {
-      console.log("Image URL is not yet available.");
+      addToast("Gambar belum diunggah.", "danger");
     }
   };
   
@@ -181,9 +192,11 @@ export default function MintNFT() {
           fillWidth
           background="brand-weak"
         >
+          {toasts.length > 0 && <Toaster toasts={toasts} removeToast={removeToast} />}
           <Text variant="heading-strong-xl" onBackground="neutral-medium">
             Mint NFT
           </Text>
+          
         </Flex>
         <Flex
           gap="24"
@@ -290,11 +303,6 @@ export default function MintNFT() {
               {isMinting ? "Minting..." : "Mint NFT"}
             </Button>
           </Flex>
-          {mintError && (
-            <Text color="danger" variant="body-default-s">
-              {mintError}
-            </Text>
-          )}
         </Flex>
       </Flex>
       <Footer></Footer>
