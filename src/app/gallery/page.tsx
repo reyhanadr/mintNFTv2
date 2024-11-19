@@ -28,7 +28,7 @@ export default function Gallery() {
 
   return (
     <Flex fillWidth paddingTop="l" paddingX="l" direction="column" alignItems="center" flex={1}>
-      <Flex position="relative" as="section" overflow="hidden" fillWidth minHeight="0" maxWidth={68} direction="column" alignItems="center" flex={1}>
+      <Flex position="relative" as="section" overflow="hidden" fillWidth minHeight="0" direction="column" alignItems="center" flex={1}>
         <Header/>
         
         <Flex gap="24" padding="24" alignItems="space-between" justifyContent="space-between" fillWidth >

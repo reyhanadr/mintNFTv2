@@ -178,7 +178,6 @@ export default function mintNFT() {
         overflow="hidden"
         fillWidth
         minHeight="0"
-        maxWidth={68}
         direction="column"
         alignItems="center"
         flex={1}
@@ -190,7 +189,6 @@ export default function mintNFT() {
           alignItems="center"
           justifyContent="center"
           fillWidth
-          background="brand-weak"
         >
           {toasts.length > 0 && <Toaster toasts={toasts} removeToast={removeToast} />}
           <Text variant="heading-strong-xl" onBackground="neutral-medium">
@@ -204,8 +202,9 @@ export default function mintNFT() {
           alignItems="start"
           justifyContent="start"
           fillWidth
-          background="brand-weak"
           direction="column"
+        maxWidth={68}
+
         >
           <Text variant="heading-strong-m" onBackground="neutral-medium">
             Image of NFT

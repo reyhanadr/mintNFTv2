@@ -26,7 +26,7 @@ export default function Home() {
 					justifyContent="center"
 					fillWidth
 					radius="l"
-					>
+				>
 					<RevealFx
 						speed="medium"
 						delay={0}
@@ -60,13 +60,16 @@ export default function Home() {
 						</Flex>
 					</RevealFx>
 					<RevealFx>
-					<MasonryGrid/>
-					<Flex
-						gap="8"
-						padding="8"
+					<Flex					
+						direction="column"
+						gap="24"
 						alignItems="center"
 						justifyContent="center"
+						fillWidth
+						radius="l" 
 					>
+						<MasonryGrid>
+						</MasonryGrid>
 					</Flex>
 					</RevealFx>
 				</Flex>

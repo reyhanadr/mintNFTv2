@@ -39,7 +39,6 @@ export default function SuccessMint() {
         overflow="hidden"
         fillWidth
         minHeight="0"
-        maxWidth={68}
         direction="column"
         alignItems="center"
         flex={1}
