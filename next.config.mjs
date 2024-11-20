@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     images: {
-      domains: ['ipfs.io'],  // Menambahkan domain ipfs.io untuk mendukung gambar dari IPFS
+      domains: ['i.seadn.io', 'ipfs.io'], // Add domain for ipfs and image
     },
   };
   
