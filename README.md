@@ -1,15 +1,65 @@
-How to run in Development Environment:
-1. npm install
-2. npm run dev
-3. open http://localhost:3000/
+# Run in Development Environment
 
-Flow How to Mint:
-1. Start
-2. User Open the Homepage: http://localhost:3000/
-3. Select Connect Button and Connect with Sepolia
-4. Select Mint Button near Connected:0x... and will go to Minting Page
-5. User fill the form in Minting Page (with image) and click mint, and approve transasction.
-6. if User approve the transaction, NFT will be minting in Sepolia and will triger Toast with message:NFT successfully minted! and user will redirect to congratulations page
-7. if User Rejected the transaction, will trigger Toast with message: An error occurred during minting
-8. End
+To set up and run the project in your development environment, follow these steps:
+
+1. **Install Dependencies**  
+   Run the following command to install all the required dependencies listed in the `package.json` file. This will ensure that the project has all the necessary libraries and modules to work correctly:
+
+   ```bash
+   npm install
+   ```
+2. **Run the Program**  
+   Run the following command to start the development server:
+
+   ```bash
+   npm run dev
+   ```
+3. **Open the Program**  
+   Open the program in Browser (e.g Google Chrome, Microsoft Edge, etc..)
+   ```bash
+   http://localhost:3000
+   ```
+
+## Flow: How to Mint an NFT
+
+### Steps:
+
+1. **Start**  
+   The minting process begins.
+
+2. **Open the Homepage**  
+   Navigate to: [http://localhost:3000/](http://localhost:3000/)
+
+3. **Connect Wallet**  
+   - Click the **Connect** button on the homepage.  
+   - Connect your wallet to the **Sepolia** network.
+
+4. **Go to Minting Page**  
+   - Click the **Mint** button located near the wallet address (e.g., `Connected: 0x...`).  
+   - You will be redirected to the **Minting Page**.
+
+5. **Fill the Form**  
+   - Complete the form on the **Minting Page**, including uploading an image for the NFT.  
+   - Click the **Mint** button to start the minting process.
+
+6. **Approve or Reject the Transaction**  
+   - If you **approve** the transaction:
+     - The NFT will be minted on the **Sepolia** network.  
+     - A **Toast notification** will appear with the message:  
+       **"NFT successfully minted!"**  
+     - You will be redirected to the **Congratulations Page**.
+   - If you **reject** the transaction:
+     - A **Toast notification** will appear with the message:  
+       **"An error occurred during minting."**
+
+7. **End**  
+   The minting process concludes.
+
+
+## Try the DApps Live
+
+You can explore and test the application in a live. Follow the link below to access the live demo:
+
+🔗 [Live Demo: Mint NFT Application](https://demo-mint-nft.reyhanadr.com/)
+
 
