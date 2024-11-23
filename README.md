@@ -8,13 +8,19 @@ To set up and run the project in your development environment, follow these step
    ```bash
    npm install
    ```
-2. **Run the Program**  
+2. Configure Environment Variables
+   Edit the env.example file and provide your Thirdweb Secret Key and Client ID. Rename the file to .env once the configuration is complete.
+   ```bash
+   NEXT_PUBLIC_THIRDWEB_CLIENT_ID=replace_with_your_api_key_here
+   NEXT_PUBLIC_THIRDWEB_SECRET_KEY=replace_with_your_api_key_here
+   ```
+4. **Run the Program**  
    Run the following command to start the development server:
 
    ```bash
    npm run dev
    ```
-3. **Open the Program**  
+5. **Open the Program**  
    Open the program in Browser (e.g Google Chrome, Microsoft Edge, etc..)
    ```bash
    http://localhost:3000
