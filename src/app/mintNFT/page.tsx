@@ -5,7 +5,9 @@ import { Flex, Button, Text, Input, Textarea, Toaster } from "@/once-ui/componen
 import { MediaUpload } from "@/once-ui/modules/media/MediaUpload";
 import { Header } from "@/once-ui/modules/layout/Header";
 import { Footer } from "@/once-ui/modules/layout/Footer";
+import { ThirdwebProvider, metamaskWallet } from "@thirdweb-dev/react";
 import { ThirdwebSDK } from "@thirdweb-dev/sdk";
+import { Sepolia } from "@thirdweb-dev/chains";
 import { ethers } from "ethers";
 
 export default function mintNFT() {
@@ -145,7 +147,7 @@ export default function mintNFT() {
       // Redirect ke halaman success-mint setelah minting berhasil
       router.push("/success-mint");
     } catch (error: unknown) {
-      const errorMessage = "An error occurred during minting";
+      const errorMessage = "An error occurred during minting / Connect Your Wallet";
       addToast(errorMessage, "danger");
       console.error("Minting error:", error);
     } finally {
@@ -156,14 +158,31 @@ export default function mintNFT() {
   // Fungsi untuk menangani submit form
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    if (image) {
-      mintNFT();
-    } else {
-      addToast("Gambar belum diunggah.", "danger");
+  
+    if (!name.trim()) {
+      addToast("NFT name not yet filled.", "danger");
+      return;
     }
+    if (!description.trim()) {
+      addToast("NFT description not yet filled.", "danger");
+      return;
+    }
+    if (!image) {
+      addToast("NFT image not yet selected.", "danger");
+      return;
+    }
+  
+    await mintNFT();
   };
   
+  
   return (
+  <ThirdwebProvider
+    supportedWallets={[metamaskWallet()]}
+    activeChain="sepolia"
+    supportedChains={[Sepolia]}
+    clientId={process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID}
+  >
     <Flex
       fillWidth
       paddingTop="l"
@@ -203,8 +222,7 @@ export default function mintNFT() {
           justifyContent="start"
           fillWidth
           direction="column"
-        maxWidth={68}
-
+          maxWidth={68}
         >
           <Text variant="heading-strong-m" onBackground="neutral-medium">
             Image of NFT
@@ -306,5 +324,7 @@ export default function mintNFT() {
       </Flex>
       <Footer></Footer>
     </Flex>
+  </ThirdwebProvider>
+
   );
 }

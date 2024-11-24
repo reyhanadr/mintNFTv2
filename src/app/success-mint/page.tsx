@@ -11,6 +11,8 @@ import {
 } from "@/once-ui/components";
 import { Header } from "@/once-ui/modules/layout/Header";
 import { Footer } from "@/once-ui/modules/layout/Footer";
+import { ThirdwebProvider, metamaskWallet } from "@thirdweb-dev/react";
+import { Sepolia } from "@thirdweb-dev/chains";
 
 export default function SuccessMint() {
   const [mintedNFTData, setMintedNFTData] = useState<any>(null);
@@ -25,6 +27,10 @@ export default function SuccessMint() {
 
   if (!mintedNFTData) {
     return (
+    <ThirdwebProvider
+      supportedWallets={[metamaskWallet()]}
+      clientId={process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID}
+    >
       <Flex
       fillWidth
       paddingTop="l"
@@ -94,14 +100,16 @@ export default function SuccessMint() {
               </Flex>
             </Flex>
 
-            <Button size="s" variant="tertiary">
+            <Button size="s" variant="tertiary" href={`/`}>
               Back to Home
             </Button>
           </Flex>
         </RevealFx>
       </Flex>
       <Footer></Footer>
-    </Flex>
+      </Flex>
+    </ThirdwebProvider>
+
     );
   }
 
@@ -114,6 +122,10 @@ export default function SuccessMint() {
 
 
   return (
+  <ThirdwebProvider
+    supportedWallets={[metamaskWallet()]}
+    clientId={process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID}
+  >
     <Flex
       fillWidth
       paddingTop="l"
@@ -172,9 +184,9 @@ export default function SuccessMint() {
               <SmartImage
                 src={ipfsGatewayUrl} // Menampilkan gambar dari IPFS Gateway
                 alt="Minted NFT"
-                aspectRatio="16/9"
+                aspectRatio="4/3"
                 radius="m"
-                objectFit="cover"
+                objectFit="contain"
               />
               <Flex
                 direction="column"
@@ -187,7 +199,7 @@ export default function SuccessMint() {
               </Flex>
             </Flex>
 
-            <Button size="s" variant="tertiary">
+            <Button size="s" variant="tertiary" href={`/`}>
               Back to Home
             </Button>
           </Flex>
@@ -195,5 +207,7 @@ export default function SuccessMint() {
       </Flex>
       <Footer></Footer>
     </Flex>
+  </ThirdwebProvider>
+
   );
 }

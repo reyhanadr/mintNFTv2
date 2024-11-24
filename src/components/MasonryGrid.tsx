@@ -146,10 +146,11 @@ export default function MasonryGrid() {
                   alt={nft.name}
                   aspectRatio="4/3"
                   radius="m"
-                  objectFit="cover"
+                  objectFit="contain"
                   priority={false}
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   style={{ width: "100%", height: "auto" }}  // Ensure image is responsive
+                  
                 />
                 <Flex
                   direction="column"

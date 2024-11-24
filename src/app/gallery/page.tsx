@@ -6,6 +6,8 @@ import { Header } from "@/once-ui/modules/layout/Header";
 import { Footer } from "@/once-ui/modules/layout/Footer";
 import MasonryGrid from '@/components/MasonryGrid';
 import Link from 'next/link';
+import { ThirdwebProvider, metamaskWallet } from "@thirdweb-dev/react";
+import { Sepolia } from "@thirdweb-dev/chains";
 
 export default function Gallery() {
 	const links = [
@@ -27,21 +29,29 @@ export default function Gallery() {
 	];
 
   return (
-    <Flex fillWidth paddingTop="l" paddingX="l" direction="column" alignItems="center" flex={1}>
-      <Flex position="relative" as="section" overflow="hidden" fillWidth minHeight="0" direction="column" alignItems="center" flex={1}>
-        <Header/>
-        
-        <Flex gap="24" padding="24" alignItems="space-between" justifyContent="space-between" fillWidth >
-          <Text variant="heading-strong-l" onBackground="neutral-medium" marginTop="16">Gallery</Text>
-        </Flex>
+	<ThirdwebProvider
+		supportedWallets={[metamaskWallet()]}
+		activeChain="sepolia"
+		supportedChains={[Sepolia]}
+		clientId={process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID}
+  	>
+		<Flex fillWidth paddingTop="l" paddingX="l" direction="column" alignItems="center" flex={1}>
+		<Flex position="relative" as="section" overflow="hidden" fillWidth minHeight="0" direction="column" alignItems="center" flex={1}>
+			<Header/>
+			
+			<Flex gap="24" padding="24" alignItems="space-between" justifyContent="space-between" fillWidth >
+			<Text variant="heading-strong-l" onBackground="neutral-medium" marginTop="16">Gallery</Text>
+			</Flex>
 
-        <Flex direction="column" gap="24" padding="24" alignItems="center" justifyContent="center" fillWidth radius="m" >
-          <MasonryGrid>
-          </MasonryGrid>
-        </Flex>
-      </Flex>
+			<Flex direction="column" gap="24" padding="24" alignItems="center" justifyContent="center" fillWidth radius="m" >
+			<MasonryGrid>
+			</MasonryGrid>
+			</Flex>
+		</Flex>
 
-      <Footer></Footer>
-    </Flex>
+		<Footer></Footer>
+		</Flex>
+	</ThirdwebProvider>
+
   );
 }
