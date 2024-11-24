@@ -186,7 +186,7 @@ export default function SuccessMint() {
               <SmartImage
                 src={ipfsGatewayUrl} // Menampilkan gambar dari IPFS Gateway
                 alt="Minted NFT"
-                aspectRatio="4/3"
+                aspectRatio="1/1"
                 radius="m"
                 objectFit="contain"
               />

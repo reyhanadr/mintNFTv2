@@ -13,10 +13,10 @@ interface NFTMetadata {
 
 export default function MasonryGrid() {
   const breakpointColumnsObj = {
-    default: 3,  // Default number of columns for large screens (desktop)
-    1200: 3,     // 3 columns for screens 1200px and above
-    768: 2,      // 2 columns for screens 768px and above (tablets)
-    480: 1,      // 1 column for screens 480px and below (mobile)
+    default: 4,
+    1100: 3,
+    700: 2,
+    500: 1
   };
 
   const apiKey = process.env.NEXT_PUBLIC_OPENSEA_API_KEY;
@@ -140,16 +140,16 @@ export default function MasonryGrid() {
                 background="accent-medium"
                 shadow="l"
                 style={{ width: "100%" }}  // Ensure full width in mobile view
+                marginTop="16"
               >
                 <SmartImage
                   src={nft.image_url}
                   alt={nft.name}
-                  aspectRatio="4/3"
+                  aspectRatio="1/1"
                   radius="m"
-                  objectFit="contain"
+                  objectFit="none"
                   priority={false}
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  style={{ width: "100%", height: "auto" }}  // Ensure image is responsive
                   
                 />
                 <Flex

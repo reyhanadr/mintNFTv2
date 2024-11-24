@@ -46,7 +46,7 @@ export default function Gallery() {
 			<Text variant="heading-strong-l" onBackground="neutral-medium" marginTop="16">Gallery</Text>
 			</Flex>
 
-			<Flex direction="column" gap="24" padding="24" alignItems="center" justifyContent="center" fillWidth radius="m" >
+			<Flex direction="column" gap="24" padding="24" alignItems="center" justifyContent="center" fillWidth radius="m" marginBottom='20'>
 			<MasonryGrid>
 			</MasonryGrid>
 			</Flex>

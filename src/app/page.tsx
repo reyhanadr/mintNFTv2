@@ -56,8 +56,8 @@ export default function Home() {
 									Crystalized Passion.
 								</Text>
 								<Button 
-									size="s" 
-									variant="tertiary" 
+									size="m" 
+									variant="primary" 
 									href={`/gallery`} 
 									label="Explore" 
 								/>
@@ -72,6 +72,7 @@ export default function Home() {
 							justifyContent="center"
 							fillWidth
 							radius="l" 
+							marginBottom='32'
 						>
 							<MasonryGrid>
 							</MasonryGrid>

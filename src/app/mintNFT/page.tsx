@@ -249,7 +249,7 @@ export default function mintNFT() {
             >
               <MediaUpload
                 compress
-                aspectRatio="4 / 3"
+                aspectRatio="1/1"
                 quality={0.8}
                 initialPreviewImage="/images/upload_image.png"
                 onFileUpload={async (file) => {
@@ -272,12 +272,12 @@ export default function mintNFT() {
                 Drag and drop or click to upload
               </Text>
               <Text variant="body-default-s" onBackground="neutral-medium">
-                Recommended size: 350 x 350. File types: JPG, PNG, SVG, or GIF
+                Recommended size: 350 x 350 or aspect ratio 1/1. File types: JPG, or PNG
               </Text>
             </Flex>
           </Flex>
           <Text variant="heading-strong-xs" onBackground="neutral-medium">
-            Name
+            Name of NFT
           </Text>
           <Input
             id="name"
@@ -287,7 +287,7 @@ export default function mintNFT() {
             onChange={(e) => setName(e.target.value)}
           />
           <Text variant="heading-strong-xs" onBackground="neutral-medium">
-            Description
+            Description of NFT
           </Text>
           <Textarea
             id="description"
@@ -299,7 +299,7 @@ export default function mintNFT() {
             onChange={(e) => setDescription(e.target.value)}
           />
           <Text variant="heading-strong-xs" onBackground="neutral-medium">
-            External URL
+            External URL of NFT
           </Text>
           <Input
             id="externalUrl"
