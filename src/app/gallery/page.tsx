@@ -6,7 +6,7 @@ import { Header } from "@/once-ui/modules/layout/Header";
 import { Footer } from "@/once-ui/modules/layout/Footer";
 import MasonryGrid from '@/components/MasonryGrid';
 import Link from 'next/link';
-import { ThirdwebProvider, metamaskWallet } from "@thirdweb-dev/react";
+import { ThirdwebProvider, ConnectEmbed, metamaskWallet, walletConnect } from "@thirdweb-dev/react";
 import { Sepolia } from "@thirdweb-dev/chains";
 
 export default function Gallery() {
@@ -30,7 +30,10 @@ export default function Gallery() {
 
   return (
 	<ThirdwebProvider
-		supportedWallets={[metamaskWallet()]}
+		supportedWallets={[
+			metamaskWallet(),
+			walletConnect(),
+		]}
 		activeChain="sepolia"
 		supportedChains={[Sepolia]}
 		clientId={process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID}

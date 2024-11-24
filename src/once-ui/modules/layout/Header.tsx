@@ -10,63 +10,58 @@ import {
 } from "@/once-ui/components";
 import { usePathname } from "next/navigation";
 import { Sidebar } from "@/once-ui/modules";
-import {
-  useCreateWalletInstance,
-  useSetConnectionStatus,
-  useSetConnectedWallet,
-  metamaskWallet,
-  useConnectionStatus,
-  useSigner,
-} from "@thirdweb-dev/react";
-
-const walletConfig = metamaskWallet();
+import { useActiveAccount, useActiveWallet, useAutoConnect, useConnect, useConnectModal, useDisconnect } from "thirdweb/react";
+import { createWallet } from "thirdweb/wallets";
+import { client } from "@/app/client";
+import { defineChain } from "thirdweb"; 
 
 const Header: React.FC = () => {
   const pathname = usePathname() ?? "";
   const [isMenuOpen, setIsMenuOpen] = useState(false); // Status menu mobile
-  const [address, setAddress] = useState<string | null>(null);
-  const createWalletInstance = useCreateWalletInstance();
-  const setConnectionStatus = useSetConnectionStatus();
-  const setConnectedWallet = useSetConnectedWallet();
-  const connectionStatus = useConnectionStatus();
-  const signer = useSigner();
-  const walletInstance = createWalletInstance(walletConfig);
-  const connectOptions = {
-    chainId: 11155111, // Sepolia testnet chainId
-  };
+  
+  // Get active account and wallet
+  const account = useActiveAccount();
+  const connectedWallet = useActiveWallet();
+
+  // Get disconnect functions
+  const { disconnect } = useDisconnect();
+
+  // Get Sepolia Chain
+  const sepolia = defineChain({
+     id: 11155111,
+  });
+
+  const wallets = [
+    createWallet("io.metamask"),
+    createWallet("com.coinbase.wallet"),
+    createWallet("com.bitget.web3"),
+    createWallet("com.trustwallet.app"),
+    createWallet("com.okex.wallet"),
+  ];
+
+  // Get connect modal function
+  const { connect } = useConnectModal(); 
   const handleConnect = async () => {
-    setConnectionStatus("connecting");
-    try {
-      await walletInstance.connect(connectOptions);
-      setConnectedWallet(walletInstance);
-    } catch {
-      setConnectionStatus("disconnected");
-    }
+    const wallet = await connect({ client: client, theme :'light', chain: sepolia, wallets: wallets });
   };
 
-  const handleDisconnect = async () => {
-    await walletInstance.disconnect();
-    setConnectionStatus("disconnected");
-    setAddress(null);
-  };
+  // Auto connect wallet on page load
+  const { data: autoConnected } = useAutoConnect({
+    client: client,
+    wallets: wallets,
+    onConnect(wallet) {
+        console.log("Auto connected wallet:", wallet);
+    },
+  });
+
+  // const handleDisconnect = async () => {
+
+  // };
   // Fungsi untuk toggle menu mobile
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  useEffect(() => {
-    const fetchAddress = async () => {
-      if (signer) {
-        try {
-          const userAddress = await signer.getAddress();
-          setAddress(userAddress);
-        } catch {
-          setAddress(null);
-        }
-      }
-    };
-    fetchAddress();
-  }, [signer]);
 
   return (
     <Flex
@@ -108,27 +103,21 @@ const Header: React.FC = () => {
             label="Mint NFT"
             href={`/mintNFT`}
           />
-          {connectionStatus === "connecting" ? (
-            <Button size="s" variant="primary" label="Connecting..." disabled />
-          ) : connectionStatus === "connected" ? (
-            <Button
-              size="s"
-              variant="primary"
-              label={
-                address
-                  ? `Connected: ${address.slice(0, 6)}...${address.slice(-4)}`
-                  : "Disconnect"
-              }
-              onClick={handleDisconnect}
-            />
-          ) : (
-            <Button
-              size="s"
-              variant="primary"
-              label="Connect"
-              onClick={handleConnect}
-            />
-          )}
+          {account && connectedWallet ? (
+          <Button
+            size="s"
+            variant="danger"
+            label="Disconnect"
+            onClick={() => disconnect(connectedWallet)}
+          />
+        ) : (
+          <Button
+            size="s"
+            variant="primary"
+            label="Connect Wallet"
+            onClick={handleConnect} // Gunakan salah satu fungsi sesuai kebutuhan
+          />
+        )}
         </Flex>
       </Flex>
       {/* Navigasi Mobile */}
