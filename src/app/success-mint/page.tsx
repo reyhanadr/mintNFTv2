@@ -29,6 +29,8 @@ export default function SuccessMint() {
     return (
     <ThirdwebProvider
       supportedWallets={[metamaskWallet()]}
+      activeChain="sepolia"
+      supportedChains={[Sepolia]}
       clientId={process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID}
     >
       <Flex
