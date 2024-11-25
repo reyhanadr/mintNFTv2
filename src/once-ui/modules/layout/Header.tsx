@@ -12,7 +12,7 @@ import {
 } from "@/once-ui/components";
 import { usePathname } from "next/navigation";
 import { Sidebar } from "@/once-ui/modules";
-import { useActiveAccount, useActiveWallet, useAutoConnect, useConnect, useConnectModal, useDisconnect, useWalletDetailsModal } from "thirdweb/react";
+import { useActiveAccount, useActiveWallet, useAutoConnect, useConnectModal, useDisconnect, useWalletDetailsModal } from "thirdweb/react";
 import { createWallet, getWalletBalance } from "thirdweb/wallets";
 import { client } from "@/app/client";
 import { defineChain } from "thirdweb";
@@ -59,6 +59,7 @@ const Header: React.FC = () => {
   const { data: autoConnected } = useAutoConnect({
     client: client,
     wallets: wallets,
+    chain: sepolia,
     onConnect(wallet) {
       console.log("Auto connected wallet:", wallet);
     },
@@ -77,7 +78,6 @@ const Header: React.FC = () => {
         setAddress(walletAddress);
         setBalance(Number(balance.displayValue));
         setSymbol(balance.symbol);
-        console.log("Balance:", balance);
       } catch (error) {
         console.error("Error fetching balance:", error);
       }
@@ -88,7 +88,7 @@ const Header: React.FC = () => {
 
   useEffect(() => {
     fetchBalance(); // Fetch balance on component mount
-  }, [account, connectedWallet, sepolia]); // Only fetch when dependencies change
+  }, [account, connectedWallet]); // Only fetch when dependencies change
 
   // Fungsi untuk dropdown disconnect
   const handleOptionSelect = (option: DropdownOptions) => {
@@ -150,8 +150,8 @@ const Header: React.FC = () => {
           />
           {account && connectedWallet ? (
             <UserMenu
-              name={address ? `${address.slice(0, 4)}...${address.slice(-4)}` : "Loading..."}  // Pastikan format interpolasi string benar
-              subline={`${symbol}: ${balance !== null ? balance.toFixed(4) : "Loading..."}`}
+              name={address ? `${address.slice(0, 4)}...${address.slice(-4)}` : "Loading..."}  // tampilan user address
+              subline={`${symbol}: ${balance !== null ? balance.toFixed(4) : "Loading..."}`} // tampilan user balance native token
               avatarProps={{
                 empty: true,
                 value: "A",
@@ -159,7 +159,7 @@ const Header: React.FC = () => {
               dropdownOptions={[
                 {
                   dividerAfter: true,
-                  label: "Profile",
+                  label: "My Wallet",
                   value: "Profile",
                 },
                 {

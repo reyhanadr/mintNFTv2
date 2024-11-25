@@ -10,23 +10,6 @@ import { ThirdwebProvider} from "@thirdweb-dev/react";
 import { Sepolia } from "@thirdweb-dev/chains";
 
 export default function Gallery() {
-	const links = [
-		{
-			href: "https://once-ui.com/docs/theming",
-			title: "Themes",
-			description: "Style your app in minutes.",
-		},
-		{
-			href: "https://once-ui.com/docs/flexComponent",
-			title: "Layout",
-			description: "Build responsive layouts.",
-		},
-		{
-			href: "https://once-ui.com/docs/typography",
-			title: "Typography",
-			description: "Scale text automatically.",
-		},
-	];
 
   return (
 	<ThirdwebProvider

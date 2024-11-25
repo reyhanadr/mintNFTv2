@@ -1,53 +1,44 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Flex, Button, Text, Input, Textarea, Toaster } from "@/once-ui/components";
 import { MediaUpload } from "@/once-ui/modules/media/MediaUpload";
 import { Header } from "@/once-ui/modules/layout/Header";
 import { Footer } from "@/once-ui/modules/layout/Footer";
+import { client } from "@/app/client";
+import { contract } from "@/app/contract";
 import { ThirdwebProvider} from "@thirdweb-dev/react";
-import { ThirdwebSDK } from "@thirdweb-dev/sdk";
-import { Sepolia } from "@thirdweb-dev/chains";
-import { ethers } from "ethers";
+import { upload } from "thirdweb/storage";
+import { prepareContractCall } from "thirdweb";
+import { useActiveAccount, useSendTransaction } from "thirdweb/react";
 
 export default function mintNFT() {
+  // use for form
   const [image, setImage] = useState<string | null>(null);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [externalUrl, setExternalUrl] = useState("");
+  // Use for mint or minting label button
   const [isMinting, setIsMinting] = useState(false);
-  const [mintError, setMintError] = useState<string | null>(null);
+  // use for set toast
   const [toasts, setToasts] = useState<{ id: string; message: string; variant: "success" | "danger"; }[]>([]);
-  const [provider, setProvider] = useState<ethers.providers.Web3Provider | null>(null);
-  const [sdk, setSdk] = useState<ThirdwebSDK | null>(null);
+  // use to send tx with smart contract given 
+  const account = useActiveAccount();
+  const { mutate: sendTransaction } = useSendTransaction();
+  // Router for Next Congrats page
   const router = useRouter();
   
-  const contractAddress = "0xA895a9b5882DBa287CF359b6a722C5be46aCb675";
-    
-  // Global configuration for ThirdwebSDK
-  useEffect(() => {
-    if (typeof window !== "undefined" && window.ethereum) {
-      const web3Provider = new ethers.providers.Web3Provider(window.ethereum);
-      setProvider(web3Provider);
-
-      const sdkInstance = new ThirdwebSDK(web3Provider, {
-        clientId: process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID,
-        secretKey: process.env.NEXT_PUBLIC_THIRDWEB_SECRET_KEY,
-      });
-
-      setSdk(sdkInstance);
-    }
-  }, []);
-
-
   // Fungsi untuk menangani upload gambar ke IPFS
   const handleImageUpload = async (file: File): Promise<string | null> => {
     try {
-      if (!sdk) {
+      if (!client) {
         throw new Error("SDK belum diinisialisasi. Pastikan MetaMask terhubung.");
       }
       const fileToUpload = new File([file], file.name, { type: file.type });
-      const uploadedImageUrl = await sdk.storage.upload(fileToUpload);
+      const uploadedImageUrl = await upload({
+        client,
+        files: [fileToUpload],
+      });
       console.log("Uploaded Image URL:", uploadedImageUrl);
       setImage(uploadedImageUrl);
       return uploadedImageUrl;
@@ -57,10 +48,10 @@ export default function mintNFT() {
     }
   };
 
-  // Fungsi untuk upload metadata NFT ke IPFS
+  // Fungsi untuk upload metadata NFT (name, desc, image, extrnl url) to IPFS
   const uploadMetadata = async (): Promise<string | null> => {
     try {
-      if (!sdk) {
+      if (!client) {
         throw new Error("SDK belum diinisialisasi. Pastikan MetaMask terhubung.");
       }
       if (!name || !description || !image) {
@@ -70,7 +61,7 @@ export default function mintNFT() {
       const metadata = {
         name,
         description,
-        image, // URL gambar dari IPFS
+        image,
         external_url: externalUrl,
       };
 
@@ -79,7 +70,10 @@ export default function mintNFT() {
         "metadata.json",
         { type: "application/json" }
       );
-      const uploadedMetadataUrl = await sdk.storage.upload(metadataFile);
+      const uploadedMetadataUrl = await upload({
+        client,
+        files: [metadataFile],
+      });
       console.log("Uploaded Metadata URL:", uploadedMetadataUrl);
       return uploadedMetadataUrl;
     } catch (error) {
@@ -104,61 +98,81 @@ export default function mintNFT() {
   // Fungsi untuk mint NFT
   const mintNFT = async () => {
     try {
+      // Set minting for button label
       setIsMinting(true);
-      setMintError(null);
 
-      if (!provider || !sdk) {
-        throw new Error("Provider atau SDK belum siap.");
+      // if else condition client thirdweb
+      if (!client || !contract) {
+        throw new Error("Client or contract has not been initialized. Make sure everything is ready.");
       }
-
-      const signer = provider.getSigner();
-      const contract = await sdk.getContract(contractAddress);
-
-      // Unggah metadata ke IPFS
+      // if else condition connected wallet or not
+      if (!account?.address) {
+        throw new Error("Wallet is not Connected, please connect your wallet.");
+      }
+  
+      // validation input metadata
+      if (!name || !description || !image) {
+        throw new Error("Make sure all fields (name, description, image) are filled in.");
+      }
+  
+      // upload metadata to IPFS
       const metadataUrl = await uploadMetadata();
       if (!metadataUrl) {
         throw new Error("Metadata gagal diunggah ke IPFS.");
       }
-
-      // Log metadata URL before minting
       console.log("NFT Metadata URL:", metadataUrl);
-
-      const transactionData = {
-        to: contractAddress,
-        data: contract.encoder.encode("mintNFT", [
-          await signer.getAddress(),
-          metadataUrl, // URL metadata dari IPFS
-        ]),
-        gasLimit: ethers.utils.hexlify(300000),
-      };
-
-      const transactionResponse = await signer.sendTransaction(transactionData);
-      await transactionResponse.wait(); // Tunggu transaksi konfirmasi
-      addToast("NFT successfully minted!", "success");
-
-      // Simpan data ke sessionStorage setelah minting berhasil
-      sessionStorage.setItem("mintedNFTData", JSON.stringify({
-        image,
-        name,
-        description,
-        externalUrl,
-      }));
-
-      // Redirect ke halaman success-mint setelah minting berhasil
-      router.push("/success-mint");
+  
+      // preprare transaksi
+      const transaction = prepareContractCall({
+        contract,
+        method: "function mintNFT(address recipient, string tokenURI) returns (uint256)",
+        params: [account.address, metadataUrl],
+      });
+  
+      // Mengirim transaksi menggunakan fungsi sendTransaction thirdweb
+      sendTransaction(transaction, {
+        onSuccess: async (transactionReceipt) => {
+          // Mengambil transactionHash dari hasil transaksi
+          const { transactionHash } = transactionReceipt;
+  
+          // Tampilkan transaksi hash di konsol atau UI
+          console.log("Transaction Hash:", transactionHash);
+          addToast(`NFT successfully minted! TxHash: ${transactionHash}`, "success");
+  
+          // Simpan data NFT ke sessionStorage for next page congrats
+          sessionStorage.setItem(
+            "mintedNFTData",
+            JSON.stringify({
+              image,
+              name,
+              description,
+              externalUrl,
+            })
+          );
+  
+          // Redirect ke halaman success-mint if succeed
+          router.push("/success-mint");
+          setIsMinting(false);
+        },
+        onError: (error) => {
+          console.error("Transaction failed:", error);
+          addToast("NFT minting failed. Please try again.", "danger");
+          setIsMinting(false); // set button label to mint after minting failed
+        },
+      });
     } catch (error: unknown) {
-      const errorMessage = "An error occurred during minting / Connect Your Wallet";
-      addToast(errorMessage, "danger");
+      const errorMessage =
+      error instanceof Error ? error.message : "An unexpected error occurred during minting.";
       console.error("Minting error:", error);
-    } finally {
-      setIsMinting(false);
+      addToast(errorMessage, "danger");
+      setIsMinting(false); // set button label to mint after minting failed
+
     }
   };
-
+  
   // Fungsi untuk menangani submit form
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-  
     if (!name.trim()) {
       addToast("NFT name not yet filled.", "danger");
       return;
@@ -171,15 +185,12 @@ export default function mintNFT() {
       addToast("NFT image not yet selected.", "danger");
       return;
     }
-  
+    // Call function mintNFT() to mint.
     await mintNFT();
   };
   
-  
   return (
   <ThirdwebProvider
-    activeChain="sepolia"
-    supportedChains={[Sepolia]}
     clientId={process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID}
   >
     <Flex

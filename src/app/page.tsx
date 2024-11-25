@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-import { Heading, Text, Flex, Button, RevealFx, SmartImage, Grid, Icon, InlineCode, Logo, Background, LetterFx, Arrow } from '@/once-ui/components';
+import { Text, Flex, Button, RevealFx} from '@/once-ui/components';
 import { Header } from "@/once-ui/modules/layout/Header";
 import { Footer } from "@/once-ui/modules/layout/Footer";
 import MasonryGrid from '@/components/MasonryGrid';
@@ -47,7 +47,7 @@ export default function Home() {
 								gap="8"
 								
 							>
-								<Text onBackground="neutral-medium">
+								<Text variant="body-default-m" onBackground="neutral-medium" align='center'>
 									Create, Explore & Collect Digital Art NFTs
 								</Text>
 								<Text
