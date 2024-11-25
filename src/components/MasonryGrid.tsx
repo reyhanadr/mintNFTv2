@@ -7,31 +7,29 @@ interface NFTMetadata {
   name: string;
   description: string;
   image_url: string;
-  display_image_url: string;
   opensea_url: string;
 }
 
-export default function MasonryGrid() {
+interface MasonryGridProps {
+  limit: number;
+}
+
+export default function MasonryGrid({ limit }: MasonryGridProps) {
   const breakpointColumnsObj = {
     default: 4,
     1100: 3,
     700: 2,
-    500: 1
+    500: 1,
   };
 
   const apiKey = process.env.NEXT_PUBLIC_OPENSEA_API_KEY;
-  const contractAddress = "0xA895a9b5882DBa287CF359b6a722C5be46aCb675"; // Change with desired wallet address
-  const [nftData, setNftData] = useState<NFTMetadata[]>([]); // Rendered NFTs state
+  const contractAddress = "0xA895a9b5882DBa287CF359b6a722C5be46aCb675";
+  const [nftData, setNftData] = useState<NFTMetadata[]>([]);
   const [initialLoading, setInitialLoading] = useState(true);
-  const [scrollLoading, setScrollLoading] = useState(false);
-  const [limit, setLimit] = useState(16); // Render 16 items initially
-  const [allNFTs, setAllNFTs] = useState<NFTMetadata[]>([]); // Store all fetched NFTs
-  const loadMoreRef = useRef<HTMLDivElement | null>(null); // Adding type to useRef
-  const [allLoaded, setAllLoaded] = useState(false);
 
-  const fetchNFTs = async (limit: number) => {
+  const fetchNFTs = async () => {
     try {
-      const url = `https://testnets-api.opensea.io/api/v2/chain/sepolia/contract/${contractAddress}/nfts?limit=59`;
+      const url = `https://testnets-api.opensea.io/api/v2/chain/sepolia/contract/${contractAddress}/nfts?limit=${limit}`;
       const options = {
         method: "GET",
         headers: {
@@ -44,8 +42,6 @@ export default function MasonryGrid() {
       if (!response.ok) throw new Error("Failed to fetch NFT data");
 
       const result = await response.json();
-      console.log("API Response:", result); // Log full response
-
       if (Array.isArray(result.nfts)) {
         const mappedNFTs = result.nfts.map((item: any) => ({
           identifier: item.identifier,
@@ -55,55 +51,21 @@ export default function MasonryGrid() {
           opensea_url: item.opensea_url,
         }));
 
-        setAllNFTs(mappedNFTs); // Store all NFTs
-        setNftData(mappedNFTs.slice(0, limit)); // Show only the first 'limit' NFTs
+        setNftData(mappedNFTs.slice(0, limit));
       } else {
         console.error("NFTs not found in the response or incorrect structure.");
       }
-      setInitialLoading(false); // Set loading finished
-      setScrollLoading(false);  // End loading when done
+
+      setInitialLoading(false);
     } catch (error) {
       console.error("Error fetching NFTs:", error);
       setInitialLoading(false);
-      setScrollLoading(false);
     }
   };
 
-    // Load more NFTs when the user scrolls near the bottom
-    const handleScroll = () => {
-        if (
-        loadMoreRef.current &&
-        loadMoreRef.current.getBoundingClientRect().top < window.innerHeight
-        ) {
-        setScrollLoading(true);
-        setLimit((prevLimit) => {
-            const newLimit = prevLimit + 10; // Add 10 more NFTs on each scroll
-            if (newLimit <= 59) {
-            setNftData(allNFTs.slice(0, newLimit)); // Update rendered NFTs incrementally
-            if (newLimit === 59) {
-                setScrollLoading(false);  // Stop loading once we hit 59 NFTs
-                setAllLoaded(true);        // Indicate that all NFTs are loaded
-            }
-            return newLimit;
-            }else {
-                setScrollLoading(false);  // Stop loading once we hit 59 NFTs
-                setAllLoaded(true);        // Indicate that all NFTs are loaded
-                return prevLimit; // Don't increase limit beyond 59
-              }
-        });
-        }
-    };
-  
-
   useEffect(() => {
-    fetchNFTs(limit); // Fetch the full set of 59 NFTs initially
-  }, []); // Run this effect once when component mounts
-
-  useEffect(() => {
-    // Add scroll event listener
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll); // Clean up the event listener
-  }, [allNFTs]); // Depend on 'allNFTs' to avoid resetting scroll behavior
+    fetchNFTs();
+  }, [limit]);
 
   return (
     <div>
@@ -139,7 +101,7 @@ export default function MasonryGrid() {
                 onBackground="neutral-strong"
                 background="accent-medium"
                 shadow="l"
-                style={{ width: "100%" }}  // Ensure full width in mobile view
+                style={{ width: "100%" }}
                 marginTop="16"
               >
                 <SmartImage
@@ -150,7 +112,6 @@ export default function MasonryGrid() {
                   objectFit="none"
                   priority={false}
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  
                 />
                 <Flex
                   direction="column"
@@ -175,34 +136,6 @@ export default function MasonryGrid() {
             <Text>No NFTs found</Text>
           )}
         </Masonry>
-      )}
-      <div ref={loadMoreRef}></div>
-      {scrollLoading && (
-        <Flex
-          direction="column"
-          gap="24"
-          padding="24"
-          alignItems="center"
-          justifyContent="center"
-          fillWidth
-          radius="xs"
-        >
-          <Spinner size="l" />
-          <Text>Loading more NFTs...</Text>
-        </Flex>
-      )}
-    {allLoaded && (
-        <Flex
-          direction="column"
-          gap="24"
-          padding="24"
-          alignItems="center"
-          justifyContent="center"
-          fillWidth
-          radius="xs"
-        >
-          <Text>All NFTs are loaded</Text>
-        </Flex>
       )}
     </div>
   );

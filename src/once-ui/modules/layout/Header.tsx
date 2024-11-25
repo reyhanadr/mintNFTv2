@@ -7,29 +7,33 @@ import {
   Logo,
   NavIcon,
   ToggleButton,
+  UserMenu,
+  DropdownOptions,
 } from "@/once-ui/components";
 import { usePathname } from "next/navigation";
 import { Sidebar } from "@/once-ui/modules";
 import { useActiveAccount, useActiveWallet, useAutoConnect, useConnect, useConnectModal, useDisconnect } from "thirdweb/react";
-import { createWallet } from "thirdweb/wallets";
+import { createWallet, getWalletBalance } from "thirdweb/wallets";
 import { client } from "@/app/client";
-import { defineChain } from "thirdweb"; 
+import { defineChain } from "thirdweb";
 
 const Header: React.FC = () => {
   const pathname = usePathname() ?? "";
   const [isMenuOpen, setIsMenuOpen] = useState(false); // Status menu mobile
+  const [address, setAddress] = useState<String | null>(null); // State to store balance
+  const [balance, setBalance] = useState<number | null>(null); // State to store balance
+  const [symbol, setSymbol] = useState<String | null>(null); // State to store balance
   
-  // Get active account and wallet
+
+  // Get active account, wallet and chain
   const account = useActiveAccount();
   const connectedWallet = useActiveWallet();
 
   // Get disconnect functions
   const { disconnect } = useDisconnect();
 
-  // Get Sepolia Chain
-  const sepolia = defineChain({
-     id: 11155111,
-  });
+  // Initialize wallet chains (for example, Sepolia)
+  const sepolia = defineChain(11155111);
 
   const wallets = [
     createWallet("io.metamask"),
@@ -40,9 +44,15 @@ const Header: React.FC = () => {
   ];
 
   // Get connect modal function
-  const { connect } = useConnectModal(); 
+  const { connect } = useConnectModal();
   const handleConnect = async () => {
-    const wallet = await connect({ client: client, theme :'light', chain: sepolia, wallets: wallets });
+    const wallet = await connect({
+      client: client,
+      theme: "light",
+      chain: sepolia, // Use the Sepolia chain for connection
+      wallets: wallets,
+    });
+    console.log("Wallet successfully connected:", wallet);
   };
 
   // Auto connect wallet on page load
@@ -50,18 +60,49 @@ const Header: React.FC = () => {
     client: client,
     wallets: wallets,
     onConnect(wallet) {
-        console.log("Auto connected wallet:", wallet);
+      console.log("Auto connected wallet:", wallet);
     },
   });
 
-  // const handleDisconnect = async () => {
+  // Handle Get Wallet Balance
+  const fetchBalance = async () => {
+    if (account && account.address && connectedWallet && sepolia) {
+      const walletAddress = account.address; // Safely get the address
+      try {
+        const balance = await getWalletBalance({
+          address: walletAddress,
+          client: client,
+          chain: sepolia,  // Pass the active chain here
+        });
+        setAddress(walletAddress);
+        setBalance(Number(balance.displayValue));
+        setSymbol(balance.symbol);
+        console.log("Balance:", balance);
+      } catch (error) {
+        console.error("Error fetching balance:", error);
+      }
+    } else {
+      // console.error("Account or wallet not connected");
+    }
+  };
 
-  // };
+  useEffect(() => {
+    fetchBalance(); // Fetch balance on component mount
+  }, [account, connectedWallet, sepolia]); // Only fetch when dependencies change
+
+  // Fungsi untuk dropdown disconnect
+  const handleOptionSelect = (option: DropdownOptions) => {
+    console.log("Selected option:", option);
+    if (option.value === "Disconnect" && connectedWallet) {
+      disconnect(connectedWallet);
+      console.log("Wallet disconnected:", connectedWallet);
+    }
+  };
+
   // Fungsi untuk toggle menu mobile
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
-
 
   return (
     <Flex
@@ -104,33 +145,41 @@ const Header: React.FC = () => {
             href={`/mintNFT`}
           />
           {account && connectedWallet ? (
-          <Button
-            size="s"
-            variant="danger"
-            label="Disconnect"
-            onClick={() => disconnect(connectedWallet)}
-          />
-        ) : (
-          <Button
-            size="s"
-            variant="primary"
-            label="Connect Wallet"
-            onClick={handleConnect} // Gunakan salah satu fungsi sesuai kebutuhan
-          />
-        )}
+            <UserMenu
+              name={address ? `${address.slice(0, 4)}...${address.slice(-4)}` : "Loading..."}  // Pastikan format interpolasi string benar
+              subline={`${symbol}: ${balance !== null ? balance.toFixed(4) : "Loading..."}`}
+              avatarProps={{
+                empty: true,
+                value: "A",
+              }}
+              dropdownOptions={[
+                {
+                  label: "Disconnect",
+                  value: "Disconnect",
+                },
+              ]}
+              dropdownProps={{
+                onOptionSelect: handleOptionSelect,
+              }}
+            />
+          ) : (
+            <Button
+              size="s"
+              variant="primary"
+              label="Connect Wallet"
+              onClick={handleConnect}
+            />
+          )}
         </Flex>
       </Flex>
-      {/* Navigasi Mobile */}
       {isMenuOpen && (
         <Flex
           direction="column"
           gap="8"
           padding="m"
-          // background="brand-medium"
           fillWidth
           maxWidth={20}
           position="absolute"
-          // marginTop='56'
           marginLeft="0"
           marginRight="0"
           zIndex={100}

@@ -61,7 +61,6 @@ export default function Home() {
 									href={`/gallery`} 
 									label="Explore" 
 								/>
-								
 							</Flex>
 						</RevealFx>
 						<RevealFx>
@@ -74,8 +73,15 @@ export default function Home() {
 							radius="l" 
 							marginBottom='32'
 						>
-							<MasonryGrid>
+							<MasonryGrid 
+								limit={16}>
 							</MasonryGrid>
+							<Button 
+								size="m" 
+								variant="secondary" 
+								href={`/gallery`} 
+								label="Show All" 
+							/>
 						</Flex>
 						</RevealFx>
 					</Flex>
