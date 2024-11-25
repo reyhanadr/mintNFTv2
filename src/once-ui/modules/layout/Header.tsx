@@ -12,7 +12,7 @@ import {
 } from "@/once-ui/components";
 import { usePathname } from "next/navigation";
 import { Sidebar } from "@/once-ui/modules";
-import { useActiveAccount, useActiveWallet, useAutoConnect, useConnect, useConnectModal, useDisconnect } from "thirdweb/react";
+import { useActiveAccount, useActiveWallet, useAutoConnect, useConnect, useConnectModal, useDisconnect, useWalletDetailsModal } from "thirdweb/react";
 import { createWallet, getWalletBalance } from "thirdweb/wallets";
 import { client } from "@/app/client";
 import { defineChain } from "thirdweb";
@@ -20,10 +20,10 @@ import { defineChain } from "thirdweb";
 const Header: React.FC = () => {
   const pathname = usePathname() ?? "";
   const [isMenuOpen, setIsMenuOpen] = useState(false); // Status menu mobile
-  const [address, setAddress] = useState<String | null>(null); // State to store balance
+  const [address, setAddress] = useState<String | null>(null); // State to store address
   const [balance, setBalance] = useState<number | null>(null); // State to store balance
-  const [symbol, setSymbol] = useState<String | null>(null); // State to store balance
-  
+  const [symbol, setSymbol] = useState<String | null>(null); // State to store balance symbol
+  const detailsModal = useWalletDetailsModal();// modal detail wallet
 
   // Get active account, wallet and chain
   const account = useActiveAccount();
@@ -93,9 +93,13 @@ const Header: React.FC = () => {
   // Fungsi untuk dropdown disconnect
   const handleOptionSelect = (option: DropdownOptions) => {
     console.log("Selected option:", option);
-    if (option.value === "Disconnect" && connectedWallet) {
+    if (option.value == "Disconnect" && connectedWallet){
       disconnect(connectedWallet);
       console.log("Wallet disconnected:", connectedWallet);
+    }
+    else if(option.value == "Profile" && connectedWallet){
+      detailsModal.open({ client, theme: "light" });
+      console.log("Modal Openned");
     }
   };
 
@@ -153,6 +157,11 @@ const Header: React.FC = () => {
                 value: "A",
               }}
               dropdownOptions={[
+                {
+                  dividerAfter: true,
+                  label: "Profile",
+                  value: "Profile",
+                },
                 {
                   label: "Disconnect",
                   value: "Disconnect",

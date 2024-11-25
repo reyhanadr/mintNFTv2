@@ -6,12 +6,14 @@ import { Heading, Text, Flex, Button, RevealFx, SmartImage, Grid, Icon, InlineCo
 import { Header } from "@/once-ui/modules/layout/Header";
 import { Footer } from "@/once-ui/modules/layout/Footer";
 import MasonryGrid from '@/components/MasonryGrid';
-import { ThirdwebProvider, metamaskWallet } from "@thirdweb-dev/react";
+import { ThirdwebProvider } from "@thirdweb-dev/react";
+import { Sepolia } from "@thirdweb-dev/chains";
 
 export default function Home() {
 	return (
 		<ThirdwebProvider
-			supportedWallets={[metamaskWallet()]}
+			activeChain="sepolia"
+			supportedChains={[Sepolia]}
 			clientId={process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID}
 		>
 			<Flex

@@ -5,7 +5,7 @@ import { Flex, Button, Text, Input, Textarea, Toaster } from "@/once-ui/componen
 import { MediaUpload } from "@/once-ui/modules/media/MediaUpload";
 import { Header } from "@/once-ui/modules/layout/Header";
 import { Footer } from "@/once-ui/modules/layout/Footer";
-import { ThirdwebProvider, metamaskWallet, walletConnect } from "@thirdweb-dev/react";
+import { ThirdwebProvider} from "@thirdweb-dev/react";
 import { ThirdwebSDK } from "@thirdweb-dev/sdk";
 import { Sepolia } from "@thirdweb-dev/chains";
 import { ethers } from "ethers";
@@ -178,10 +178,6 @@ export default function mintNFT() {
   
   return (
   <ThirdwebProvider
-    supportedWallets={[
-      metamaskWallet(),
-      walletConnect(),
-    ]}
     activeChain="sepolia"
     supportedChains={[Sepolia]}
     clientId={process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID}
