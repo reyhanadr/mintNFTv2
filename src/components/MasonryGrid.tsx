@@ -17,10 +17,14 @@ interface MasonryGridProps {
 export default function MasonryGrid({ limit }: MasonryGridProps) {
   const breakpointColumnsObj = {
     default: 4,
+    1024: 3,
     1100: 3,
+    768: 2,
     700: 2,
+    640: 1,
     500: 1,
   };
+  console.log('Current breakpoint:', breakpointColumnsObj);
 
   const apiKey = process.env.NEXT_PUBLIC_OPENSEA_API_KEY;
   const contractAddress = "0xA895a9b5882DBa287CF359b6a722C5be46aCb675";
@@ -70,15 +74,11 @@ export default function MasonryGrid({ limit }: MasonryGridProps) {
   return (
     <div>
       {initialLoading ? (
-        <Flex
-          direction="column"
-          gap="24"
-          padding="24"
-          alignItems="center"
-          justifyContent="center"
+				<Flex
           fillWidth
-          radius="xs"
-        >
+          direction="column" 
+          alignItems="center"
+          >
           <Spinner size="l" />
           <Text>Loading...</Text>
         </Flex>
