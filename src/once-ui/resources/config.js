@@ -3,12 +3,12 @@ const baseURL = 'demo.once-ui.com'
 // default customization applied to the HTML in the main layout.tsx
 const style = {
     theme:       'light',        // dark | light
-    neutral:     'gray',        // sand | gray | slate
-    brand:       'magenta',        // blue | indigo | violet | magenta | pink | red | orange | yellow | moss | green | emerald | aqua | cyan
-    accent:      'violet',      // blue | indigo | violet | magenta | pink | red | orange | yellow | moss | green | emerald | aqua | cyan
+    neutral:     'slate',        // sand | gray | slate
+    brand:       'custom',        // blue | indigo | violet | magenta | pink | red | orange | yellow | moss | green | emerald | aqua | cyan
+    accent:      'custom',      // blue | indigo | violet | magenta | pink | red | orange | yellow | moss | green | emerald | aqua | cyan
     solid:       'color',    // color | contrast
-    solidStyle:  'flat',        // flat | plastic
-    border:      'rounded',     // rounded | playful | conservative
+    solidStyle:  'plastic',        // flat | plastic
+    border:      'playful',     // rounded | playful | conservative
     surface:     'filled', // filled | translucent
     transition:  'all',         // all | micro | macro
     scaling:     '100',         // 90 | 95 | 100 | 105 | 110
@@ -23,8 +23,8 @@ const meta = {
 
 // default open graph data
 const og = {
-    title: 'Once UI for Next.js',
-    description: 'We let designers code and developers design.',
+    title: 'Mint Mate - Engowl Studio Technical Test',
+    description: '"MintMate", a website dedicated to creating and minting NFTs.',
     type: 'website'
 }
 

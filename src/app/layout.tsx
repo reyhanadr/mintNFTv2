@@ -20,11 +20,11 @@ const primary = Inter({
     display: 'swap'
 });
 
-const secondary = Open_Sans({
-    variable: '--font-secondary',
-    subsets: ['latin'],
-    display: 'swap'
-});
+// const secondary = Open_Sans({
+//     variable: '--font-secondary',
+//     subsets: ['latin'],
+//     display: 'swap'
+// });
 
 const code = Roboto_Mono({
 	variable: '--font-code',
@@ -40,7 +40,7 @@ type FontConfig = {
 	Replace with code for secondary and tertiary fonts
 	from https://once-ui.com/customize
 */
-// const secondary: FontConfig | undefined = undefined;
+const secondary: FontConfig | undefined = undefined;
 const tertiary: FontConfig | undefined = undefined;
 /*
 */
@@ -117,7 +117,7 @@ export default function RootLayout({
 					<Background
 						style={{zIndex: '-1'}}
 						position="fixed"
-						mask="cursor"
+						mask="none"
 						dots={{
 							display: true,
 							opacity: 0.4,
@@ -125,7 +125,7 @@ export default function RootLayout({
 						}}
 						gradient={{
 							display: true,
-							opacity: 0.4,
+							opacity: 1,
 						}}/>
 					<Flex
 						flex={1} direction="column">

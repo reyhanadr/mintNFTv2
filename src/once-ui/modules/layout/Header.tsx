@@ -119,7 +119,7 @@ const Header: React.FC = () => {
       style={{ borderBottom: "1px solid var(--neutral-border-medium)" }}
     >
       <Flex hide="s">
-        <Logo />
+        <Logo iconSrc="/trademark/iconR.svg" />
       </Flex>
       <Flex show="s" gap="4" alignItems="center">
         <NavIcon onClick={toggleMenu} />
