@@ -48,6 +48,7 @@ const tertiary: FontConfig | undefined = undefined;
 export async function generateMetadata(): Promise<Metadata> {
 	const host = (await headers()).get("host");
 	const metadataBase = host ? new URL(`https://${host}`) : undefined;
+	const twitterImage = '/images/MintingDappsBanner.webp';
 
 	return {
 		title: meta.title,
@@ -69,8 +70,22 @@ export async function generateMetadata(): Promise<Metadata> {
 				| "video.episode"
 				| "video.tv_show"
 				| "video.other",
+			images: [
+				{
+					url: twitterImage,
+					alt: "Minting Dapps Banner",
+				},
+			],
+		},
+		
+		twitter: {
+			card: 'summary_large_image',
+			title : meta.title,
+			description: meta.description,
+			images: [twitterImage],
 		},
 		metadataBase,
+
 	};
 }
 

@@ -1,4 +1,4 @@
-const baseURL = 'demo.once-ui.com'
+const baseURL = 'demo-mint-nft.reyhanadr.com'
 
 // default customization applied to the HTML in the main layout.tsx
 const style = {
@@ -30,11 +30,11 @@ const og = {
 
 // default schema data
 const schema = {
-    logo: '',
+    logo: '/images/trademark/iconR.svg',
     type: 'Organization',
-    name: 'One UI',
-    description: 'Once UI is an open-source design system and component library for Next.js.',
-    email: 'lorant@once-ui.com'
+    name: 'Minting NFT',
+    description: '"MintMate", a website dedicated to creating and minting NFTs.',
+    email: 'reyhanadr@outlook.com'
 }
 
 // social links
