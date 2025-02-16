@@ -14,7 +14,7 @@ interface MediaUploadProps {
     initialPreviewImage?: string | null;
     quality?: number;
     maxWidth?: number;
-    convertTypes?: string[];
+    convertTypes?: string;
     maxHeight?: number;
     loading?: boolean;
     width?: number;
@@ -29,7 +29,7 @@ const MediaUpload = forwardRef<HTMLInputElement, MediaUploadProps>(({
     aspectRatio = '16 / 9',
     quality = 0.8,
     maxWidth = 1920,
-    convertTypes = ['image/png', 'image/webp', 'image/jpg'],
+    convertTypes = 'image/jpg',
     maxHeight = 1920,
     width = 1200,
     height = 1200,

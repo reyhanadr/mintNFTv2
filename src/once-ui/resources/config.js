@@ -16,14 +16,14 @@ const style = {
 
 // default metadata
 const meta = {
-    title: 'Mint Mate - Engowl Studio Technical Test',
+    title: 'Minting NFT on Ethereum Sepolia',
     description: '"MintMate", a website dedicated to creating and minting NFTs.'
 }
 
 
 // default open graph data
 const og = {
-    title: 'Mint Mate - Engowl Studio Technical Test',
+    title: 'Minting NFT on Ethereum Sepolia',
     description: '"MintMate", a website dedicated to creating and minting NFTs.',
     type: 'website'
 }

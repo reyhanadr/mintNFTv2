@@ -258,6 +258,7 @@ export default function mintNFT() {
                 compress
                 aspectRatio="1/1"
                 quality={0.8}
+                convertTypes="jpg"
                 initialPreviewImage="/images/upload_image.png"
                 onFileUpload={async (file) => {
                   await handleImageUpload(file);

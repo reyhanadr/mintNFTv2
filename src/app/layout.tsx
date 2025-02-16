@@ -9,8 +9,8 @@ import { baseURL, style, meta, og, schema, social } from "@/once-ui/resources/co
 
 import { Background, Flex } from '@/once-ui/components'
 
-import { Inter } from 'next/font/google'
-import { Open_Sans } from 'next/font/google';
+import { Inter } from 'next/font/google';
+import { DM_Sans } from 'next/font/google';
 import { Roboto_Mono } from 'next/font/google';
 import { ThirdwebProvider } from "thirdweb/react";
 
@@ -20,11 +20,11 @@ const primary = Inter({
     display: 'swap'
 });
 
-// const secondary = Open_Sans({
-//     variable: '--font-secondary',
-//     subsets: ['latin'],
-//     display: 'swap'
-// });
+const secondary = DM_Sans({
+    variable: '--font-secondary',
+    subsets: ['latin'],
+    display: 'swap'
+});
 
 const code = Roboto_Mono({
 	variable: '--font-code',
@@ -40,7 +40,6 @@ type FontConfig = {
 	Replace with code for secondary and tertiary fonts
 	from https://once-ui.com/customize
 */
-const secondary: FontConfig | undefined = undefined;
 const tertiary: FontConfig | undefined = undefined;
 /*
 */

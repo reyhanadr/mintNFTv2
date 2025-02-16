@@ -76,7 +76,7 @@ export default function Home() {
 							marginBottom='32'
 						>
 							<MasonryGrid 
-								limit={16}>
+								limit={18}>
 							</MasonryGrid>
 							<Button 
 								size="m" 
